@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Time Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="min-h-screen bg-gray-50">
+    <div class="p-4">
+        <div class="max-w-6xl mx-auto">
+            <!-- Header -->
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Student Time Manager</h1>
+                <p class="text-gray-600">Stay organized and manage your academic life effectively</p>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="bg-white rounded-lg shadow-sm mb-6">
+                <div class="flex border-b" id="tabContainer">
+                    <button class="tab-btn flex items-center px-6 py-3 font-medium text-sm text-blue-600 border-b-2 border-blue-600" data-tab="tasks">
+                        <span class="mr-2">📝</span>Tasks & Assignments
+                    </button>
+                    <button class="tab-btn flex items-center px-6 py-3 font-medium text-sm text-gray-500 hover:text-gray-700" data-tab="schedule">
+                        <span class="mr-2">📅</span>Schedule
+                    </button>
+                    <button class="tab-btn flex items-center px-6 py-3 font-medium text-sm text-gray-500 hover:text-gray-700" data-tab="timer">
+                        <span class="mr-2">⏰</span>Study Timer
+                    </button>
+                    <button class="tab-btn flex items-center px-6 py-3 font-medium text-sm text-gray-500 hover:text-gray-700" data-tab="dashboard">
+                        <span class="mr-2">📊</span>Dashboard
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tasks Tab -->
+            <div id="tasks-tab" class="tab-content">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Add Task Form -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h2 class="text-xl font-semibold mb-4">Add New Task</h2>
+                        <div class="space-y-4">
+                            <input type="text" id="taskTitle" placeholder="Task title" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <input type="text" id="taskSubject" placeholder="Subject/Course" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <input type="date" id="taskDueDate" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <select id="taskPriority" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="low">Low Priority</option>
+                                <option value="medium" selected>Medium Priority</option>
+                                <option value="high">High Priority</option>
+                            </select>
+                            <select id="taskType" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="assignment" selected>Assignment</option>
+                                <option value="exam">Exam</option>
+                                <option value="project">Project</option>
+                                <option value="reading">Reading</option>
+                            </select>
+                            <button onclick="addTask()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors">Add Task</button>
+                        </div>
+                    </div>
+
+                    <!-- Task List -->
+                    <div class="lg:col-span-2 bg-white rounded-lg shadow-sm p-6">
+                        <h2 class="text-xl font-semibold mb-4">Your Tasks</h2>
+                        <div id="taskList" class="space-y-3">
+                            <p class="text-gray-500 text-center py-8">No tasks yet. Add your first task!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schedule Tab -->
+            <div id="schedule-tab" class="tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Add Event Form -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h2 class="text-xl font-semibold mb-4">Add Event</h2>
+                        <div class="space-y-4">
+                            <input type="text" id="eventTitle" placeholder="Event title" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <input type="date" id="eventDate" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <input type="time" id="eventStartTime" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <input type="time" id="eventEndTime" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <select id="eventType" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="class" selected>Class</option>
+                                <option value="study">Study Session</option>
+                                <option value="meeting">Meeting</option>
+                                <option value="deadline">Deadline</option>
+                            </select>
+                            <button onclick="addEvent()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors">Add Event</button>
+                        </div>
+                    </div>
+
+                    <!-- Schedule List -->
+                    <div class="lg:col-span-2 bg-white rounded-lg shadow-sm p-6">
+                        <h2 class="text-xl font-semibold mb-4">Your Schedule</h2>
+                        <div id="scheduleList" class="space-y-3">
+                            <p class="text-gray-500 text-center py-8">No events scheduled. Add your first event!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Study Timer Tab -->
+            <div id="timer-tab" class="tab-content hidden">
+                <div class="max-w-2xl mx-auto">
+                    <div class="bg-white rounded-lg shadow-sm p-8 text-center">
+                        <h2 id="timerTitle" class="text-2xl font-semibold mb-6">📚 Study Session</h2>
+                        
+                        <div class="mb-8">
+                            <div id="timerDisplay" class="text-6xl font-mono font-bold mb-4 text-blue-600">25:00</div>
+                            <p id="timerDescription" class="text-gray-600">Focus on your studies</p>
+                        </div>
+
+                        <div class="flex justify-center space-x-4 mb-6">
+                            <button id="startPauseBtn" onclick="toggleTimer()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium">▶️ Start</button>
+                            <button onclick="resetTimer()" class="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium">🔄 Reset</button>
+                        </div>
+
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="font-medium text-gray-900 mb-2">Pomodoro Technique</h3>
+                            <p class="text-sm text-gray-600">Study for 25 minutes, then take a 5-minute break. This helps maintain focus and prevents burnout.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboard-tab" class="tab-content hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Stats Cards -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Total Tasks</p>
+                                <p id="totalTasks" class="text-2xl font-bold text-gray-900">0</p>
+                            </div>
+                            <div class="text-3xl">📝</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Completed</p>
+                                <p id="completedTasks" class="text-2xl font-bold text-green-600">0</p>
+                            </div>
+                            <div class="text-3xl">✅</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Upcoming Events</p>
+                                <p id="upcomingEvents" class="text-2xl font-bold text-blue-600">0</p>
+                            </div>
+                            <div class="text-3xl">📅</div>
+                        </div>
+                    </div>
+
+                    <!-- Today's Schedule -->
+                    <div class="md:col-span-2 lg:col-span-2 bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-semibold mb-4">Today's Schedule</h3>
+                        <div id="todaySchedule">
+                            <p class="text-gray-500">No events scheduled for today</p>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Tasks -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-semibold mb-4">Upcoming Tasks</h3>
+                        <div id="upcomingTasksList">
+                            <p class="text-gray-500">No upcoming tasks</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
