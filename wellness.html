@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health & Wellness Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --bg-card: #ffffff;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --border-color: #e5e7eb;
+            --border-light: #f3f4f6;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --accent-color: #2563eb;
+            --accent-hover: #1d4ed8;
+            --success-color: #059669;
+            --success-hover: #047857;
+            --warning-color: #d97706;
+            --warning-hover: #b45309;
+            --purple-color: #7c3aed;
+            --purple-hover: #6d28d9;
+            --red-color: #ef4444;
+            --green-color: #10b981;
+            --orange-color: #f59e0b;
+            --blue-color: #3b82f6;
+            --purple-stat: #8b5cf6;
+            --yellow-color: #fbbf24;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1f2937;
+            --bg-secondary: #111827;
+            --bg-card: #374151;
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --text-muted: #9ca3af;
+            --border-color: #4b5563;
+            --border-light: #374151;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .header {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            padding: 1rem 0;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: var(--red-color);
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-secondary);
+            border-color: var(--accent-color);
+        }
+
+        .login-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .login-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .nav-tabs {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .nav-container {
+            display: flex;
+            gap: 2rem;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 0.75rem;
+            border: none;
+            background: none;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            color: var(--text-primary);
+            border-bottom-color: var(--border-color);
+        }
+
+        .nav-tab.active {
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+        }
+
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .stat-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-icon.blue { color: var(--blue-color); }
+        .stat-icon.green { color: var(--green-color); }
+        .stat-icon.purple { color: var(--purple-stat); }
+        .stat-icon.orange { color: var(--orange-color); }
+
+        .stat-info h3 {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-info p {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            transition: border-color 0.2s;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: var(--success-hover);
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: var(--warning-hover);
+        }
+
+        .btn-purple {
+            background: var(--purple-color);
+            color: white;
+        }
+
+        .btn-purple:hover {
+            background: var(--purple-hover);
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .activity-list {
+            space-y: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-info h4 {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-info p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .activity-meta {
+            text-align: right;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 0.5rem;
+            background: var(--border-color);
+            border-radius: 0.25rem;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        .goal-item {
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .goal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .goal-title {
+            font-weight: 500;
+            color: var(--text-primary);
+            text-transform: capitalize;
+        }
+
+        .goal-percentage {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--accent-color);
+        }
+
+        .goal-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 0.125rem;
+        }
+
+        .star {
+            color: var(--yellow-color);
+            font-size: 0.75rem;
+        }
+
+        .star.empty {
+            color: var(--border-color);
+        }
+
+        .login-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .login-modal.active {
+            display: flex;
+        }
+
+        .login-form {
+            background: var(--bg-card);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+            margin: 1rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+        }
+
+        .login-form h2 {
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+
+            .logo h1 {
+                font-size: 1.25rem;
+            }
+
+            .header-controls {
+                order: -1;
+                align-self: flex-end;
+            }
+
+            .nav-container {
+                gap: 1rem;
+            }
+
+            .nav-tab {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.8rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .goal-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-heartbeat"></i>
+                    <h1>Health & Wellness Tracker</h1>
+                </div>
+                <div class="header-controls">
+                    <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="login-btn" id="login-btn">
+                        <i class="fas fa-user"></i>
+                        Login
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Login Modal -->
+    <div class="login-modal" id="login-modal">
+        <div class="login-form">
+            <button class="close-btn" id="close-modal">&times;</button>
+            <h2>Login to Your Account</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" name="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" name="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Login</button>
+            </form>
+            <p style="text-align: center; margin-top: 1rem; font-size: 0.875rem; color: var(--text-secondary);">
+                Don't have an account? <a href="#" style="color: var(--accent-color);">Sign up</a>
+            </p>
+        </div>
+    </div>
+
+    <nav class="nav-tabs">
+        <div class="container">
+            <div class="nav-container">
+                <button class="nav-tab active" data-tab="dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    Dashboard
+                </button>
+                <button class="nav-tab" data-tab="metrics">
+                    <i class="fas fa-clipboard-list"></i>
+                    Daily Metrics
+                </button>
+                <button class="nav-tab" data-tab="exercise">
+                    <i class="fas fa-dumbbell"></i>
+                    Exercise
+                </button>
+                <button class="nav-tab" data-tab="nutrition">
+                    <i class="fas fa-utensils"></i>
+                    Nutrition
+                </button>
+                <button class="nav-tab" data-tab="goals">
+                    <i class="fas fa-target"></i>
+                    Goals
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div id="dashboard" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <div class="stat-icon blue">
+                                <i class="fas fa-walking"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Avg Daily Steps</h3>
+                                <p id="avg-steps">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <div class="stat-icon green">
+                                <i class="fas fa-dumbbell"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Total Exercises</h3>
+                                <p id="total-exercises">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <div class="stat-icon purple">
+                                <i class="fas fa-target"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Active Goals</h3>
+                                <p id="active-goals">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <div class="stat-icon orange">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Days Tracked</h3>
+                                <p id="days-tracked">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Health Metrics</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="recent-metrics" class="activity-list"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Active Goals</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="active-goals-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="metrics" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Daily Health Metrics</h3>
+                    </div>
+                    <div class="card-content">
+                        <form id="metrics-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Date</label>
+                                    <input type="date" class="form-input" name="date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Weight (kg)</label>
+                                    <input type="number" step="0.1" class="form-input" name="weight_kg" placeholder="70.5">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Steps</label>
+                                    <input type="number" class="form-input" name="steps" placeholder="10000">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Water Intake (ml)</label>
+                                    <input type="number" class="form-input" name="water_intake_ml" placeholder="2000">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Sleep Hours</label>
+                                    <input type="number" step="0.5" class="form-input" name="sleep_hours" placeholder="8.0">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Mood Rating (1-5)</label>
+                                    <select class="form-select" name="mood_rating">
+                                        <option value="">Select mood</option>
+                                        <option value="1">1 - Very Bad</option>
+                                        <option value="2">2 - Bad</option>
+                                        <option value="3">3 - Okay</option>
+                                        <option value="4">4 - Good</option>
+                                        <option value="5">5 - Excellent</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Notes</label>
+                                <textarea class="form-textarea" name="notes" placeholder="Any additional notes about your day..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-full">Save Health Metrics</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div id="exercise" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Log Exercise Session</h3>
+                    </div>
+                    <div class="card-content">
+                        <form id="exercise-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Date</label>
+                                    <input type="date" class="form-input" name="date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Exercise Type</label>
+                                    <input type="text" class="form-input" name="exercise_type" placeholder="Running, Cycling, Weight Training..." required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Duration (minutes)</label>
+                                    <input type="number" class="form-input" name="duration_minutes" placeholder="30" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Calories Burned</label>
+                                    <input type="number" class="form-input" name="calories_burned" placeholder="300">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Notes</label>
+                                <textarea class="form-textarea" name="notes" placeholder="How did the workout feel? Any observations..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-full">Log Exercise Session</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Exercise Sessions</h3>
+                    </div>
+                    <div class="card-content">
+                        <div id="recent-exercises" class="activity-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="nutrition" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Log Meal</h3>
+                    </div>
+                    <div class="card-content">
+                        <form id="meal-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Date</label>
+                                    <input type="date" class="form-input" name="date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Meal Type</label>
+                                    <select class="form-select" name="meal_type" required>
+                                        <option value="breakfast">Breakfast</option>
+                                        <option value="lunch">Lunch</option>
+                                        <option value="dinner">Dinner</option>
+                                        <option value="snack">Snack</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Food Item</label>
+                                    <input type="text" class="form-input" name="food_item" placeholder="Grilled chicken breast, Apple, etc." required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Calories</label>
+                                    <input type="number" class="form-input" name="calories" placeholder="250">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Protein (g)</label>
+                                    <input type="number" step="0.1" class="form-input" name="protein_g" placeholder="25.0">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Carbs (g)</label>
+                                    <input type="number" step="0.1" class="form-input" name="carbs_g" placeholder="15.0">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Fat (g)</label>
+                                    <input type="number" step="0.1" class="form-input" name="fat_g" placeholder="8.0">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-warning btn-full">Log Meal</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Meals</h3>
+                    </div>
+                    <div class="card-content">
+                        <div id="recent-meals" class="activity-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="goals" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Create New Goal</h3>
+                    </div>
+                    <div class="card-content">
+                        <form id="goal-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Goal Type</label>
+                                    <select class="form-select" name="goal_type" required>
+                                        <option value="">Select goal type</option>
+                                        <option value="weight_loss">Weight Loss</option>
+                                        <option value="weight_gain">Weight Gain</option>
+                                        <option value="daily_steps">Daily Steps</option>
+                                        <option value="weekly_exercise">Weekly Exercise Sessions</option>
+                                        <option value="daily_water">Daily Water Intake</option>
+                                        <option value="sleep_hours">Sleep Hours</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Target Value</label>
+                                    <input type="number" step="0.1" class="form-input" name="target_value" placeholder="10000" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Current Value</label>
+                                    <input type="number" step="0.1" class="form-input" name="current_value" placeholder="0">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Target Date</label>
+                                    <input type="date" class="form-input" name="target_date">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-purple btn-full">Create Goal</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Your Active Goals</h3>
+                    </div>
+                    <div class="card-content">
+                        <div id="goals-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        class HealthTracker {
+            constructor() {
+                this.data = this.loadData();
+                this.currentTheme = localStorage.getItem('theme') || 'light';
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.setDefaultDates();
+                this.updateDashboard();
+                this.renderRecentData();
+                this.initTheme();
+            }
+
+            initTheme() {
+                document.documentElement.setAttribute('data-theme', this.currentTheme);
+                this.updateThemeIcon();
+            }
+
+            updateThemeIcon() {
+                const themeToggle = document.getElementById('theme-toggle');
+                const icon = themeToggle.querySelector('i');
+                if (this.currentTheme === 'dark') {
+                    icon.className = 'fas fa-sun';
+                    themeToggle.title = 'Switch to light mode';
+                } else {
+                    icon.className = 'fas fa-moon';
+                    themeToggle.title = 'Switch to dark mode';
+                }
+            }
+
+            toggleTheme() {
+                this.currentTheme = this.currentTheme === 'light' ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', this.currentTheme);
+                localStorage.setItem('theme', this.currentTheme);
+                this.updateThemeIcon();
+            }
+
+            loadData() {
+                const defaultData = {
+                    healthMetrics: [],
+                    exercises: [],
+                    meals: [],
+                    goals: []
+                };
+                
+                try {
+                    const saved = localStorage.getItem('healthTrackerData');
+                    return saved ? JSON.parse(saved) : defaultData;
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                    return defaultData;
+                }
+            }
+
+            saveData() {
+                try {
+                    localStorage.setItem('healthTrackerData', JSON.stringify(this.data));
+                } catch (error) {
+                    console.error('Error saving data:', error);
+                    alert('Failed to save data. Please try again.');
+                }
+            }
+
+            setupEventListeners() {
+                // Theme toggle
+                document.getElementById('theme-toggle').addEventListener('click', () => {
+                    this.toggleTheme();
+                });
+
+                // Login modal
+                document.getElementById('login-btn').addEventListener('click', () => {
+                    document.getElementById('login-modal').classList.add('active');
+                });
+
+                document.getElementById('close-modal').addEventListener('click', () => {
+                    document.getElementById('login-modal').classList.remove('active');
+                });
+
+                document.getElementById('login-modal').addEventListener('click', (e) => {
+                    if (e.target.id === 'login-modal') {
+                        document.getElementById('login-modal').classList.remove('active');
+                    }
+                });
+
+                document.getElementById('login-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.target);
+                    const email = formData.get('email');
+                    const password = formData.get('password');
+                    
+                    // Simple demo login
+                    if (email && password) {
+                        alert(`Login successful! Welcome, ${email}`);
+                        document.getElementById('login-modal').classList.remove('active');
+                        document.getElementById('login-btn').innerHTML = `<i class="fas fa-user-circle"></i> ${email.split('@')[0]}`;
+                    }
+                });
+
+                // Navigation tabs
+                document.querySelectorAll('.nav-tab').forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        const tabName = e.target.dataset.tab;
+                        this.switchTab(tabName);
+                    });
+                });
+
+                // Forms
+                document.getElementById('metrics-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.saveHealthMetrics(e.target);
+                });
+
+                document.getElementById('exercise-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.logExercise(e.target);
+                });
+
+                document.getElementById('meal-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.logMeal(e.target);
+                });
+
+                document.getElementById('goal-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.createGoal(e.target);
+                });
+            }
+
+            setDefaultDates() {
+                const today = new Date().toISOString().split('T')[0];
+                document.querySelectorAll('input[type="date"]').forEach(input => {
+                    if (!input.value) {
+                        input.value = today;
+                    }
+                });
+            }
+
+            switchTab(tabName) {
+                document.querySelectorAll('.nav-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabName).classList.add('active');
+
+                if (tabName === 'dashboard') {
+                    this.updateDashboard();
+                } else if (tabName === 'exercise') {
+                    this.renderRecentExercises();
+                } else if (tabName === 'nutrition') {
+                    this.renderRecentMeals();
+                } else if (tabName === 'goals') {
+                    this.renderGoals();
+                }
+            }
+
+            saveHealthMetrics(form) {
+                const formData = new FormData(form);
+                const metrics = {
+                    id: Date.now(),
+                    date: formData.get('date'),
+                    weight_kg: parseFloat(formData.get('weight_kg')) || null,
+                    steps: parseInt(formData.get('steps')) || 0,
+                    water_intake_ml: parseInt(formData.get('water_intake_ml')) || 0,
+                    sleep_hours: parseFloat(formData.get('sleep_hours')) || 0,
+                    mood_rating: parseInt(formData.get('mood_rating')) || null,
+                    notes: formData.get('notes') || '',
+                    created_at: new Date().toISOString()
+                };
+
+                this.data.healthMetrics = this.data.healthMetrics.filter(m => m.date !== metrics.date);
+                this.data.healthMetrics.push(metrics);
+                this.data.healthMetrics.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                this.saveData();
+                this.updateDashboard();
+                form.reset();
+                this.setDefaultDates();
+                alert('Health metrics saved successfully!');
+            }
+
+            logExercise(form) {
+                const formData = new FormData(form);
+                const exercise = {
+                    id: Date.now(),
+                    date: formData.get('date'),
+                    exercise_type: formData.get('exercise_type'),
+                    duration_minutes: parseInt(formData.get('duration_minutes')),
+                    calories_burned: parseInt(formData.get('calories_burned')) || 0,
+                    notes: formData.get('notes') || '',
+                    created_at: new Date().toISOString()
+                };
+
+                this.data.exercises.push(exercise);
+                this.data.exercises.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                this.saveData();
+                this.updateDashboard();
+                this.renderRecentExercises();
+                form.reset();
+                this.setDefaultDates();
+                alert('Exercise logged successfully!');
+            }
+
+            logMeal(form) {
+                const formData = new FormData(form);
+                const meal = {
+                    id: Date.now(),
+                    date: formData.get('date'),
+                    meal_type: formData.get('meal_type'),
+                    food_item: formData.get('food_item'),
+                    calories: parseInt(formData.get('calories')) || 0,
+                    protein_g: parseFloat(formData.get('protein_g')) || 0,
+                    carbs_g: parseFloat(formData.get('carbs_g')) || 0,
+                    fat_g: parseFloat(formData.get('fat_g')) || 0,
+                    created_at: new Date().toISOString()
+                };
+
+                this.data.meals.push(meal);
+                this.data.meals.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                this.saveData();
+                this.renderRecentMeals();
+                form.reset();
+                this.setDefaultDates();
+                alert('Meal logged successfully!');
+            }
+
+            createGoal(form) {
+                const formData = new FormData(form);
+                const goal = {
+                    id: Date.now(),
+                    goal_type: formData.get('goal_type'),
+                    target_value: parseFloat(formData.get('target_value')),
+                    current_value: parseFloat(formData.get('current_value')) || 0,
+                    target_date: formData.get('target_date') || null,
+                    is_active: true,
+                    created_at: new Date().toISOString()
+                };
+
+                this.data.goals.push(goal);
+                this.saveData();
+                this.updateDashboard();
+                this.renderGoals();
+                form.reset();
+                alert('Goal created successfully!');
+            }
+
+            updateDashboard() {
+                const avgSteps = this.data.healthMetrics.length > 0 
+                    ? Math.round(this.data.healthMetrics.reduce((sum, m) => sum + (m.steps || 0), 0) / this.data.healthMetrics.length)
+                    : 0;
+                
+                const totalExercises = this.data.exercises.length;
+                const activeGoals = this.data.goals.filter(g => g.is_active).length;
+                const daysTracked = this.data.healthMetrics.length;
+
+                document.getElementById('avg-steps').textContent = avgSteps.toLocaleString();
+                document.getElementById('total-exercises').textContent = totalExercises;
+                document.getElementById('active-goals').textContent = activeGoals;
+                document.getElementById('days-tracked').textContent = daysTracked;
+
+                this.renderRecentMetrics();
+                this.renderActiveGoals();
+            }
+
+            renderRecentMetrics() {
+                const container = document.getElementById('recent-metrics');
+                const recentMetrics = this.data.healthMetrics.slice(0, 5);
+
+                if (recentMetrics.length === 0) {
+                    container.innerHTML = '<div class="empty-state">No health metrics recorded yet</div>';
+                    return;
+                }
+
+                container.innerHTML = recentMetrics.map(metric => `
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <h4>${metric.date}</h4>
+                            <p>
+                                ${metric.steps > 0 ? `${metric.steps} steps` : ''}
+                                ${metric.weight_kg ? ` • ${metric.weight_kg}kg` : ''}
+                                ${metric.sleep_hours > 0 ? ` • ${metric.sleep_hours}h sleep` : ''}
+                            </p>
+                        </div>
+                        <div class="activity-meta">
+                            ${metric.mood_rating ? this.renderStars(metric.mood_rating) : ''}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            renderActiveGoals() {
+                const container = document.getElementById('active-goals-list');
+                const activeGoals = this.data.goals.filter(g => g.is_active).slice(0, 5);
+
+                if (activeGoals.length === 0) {
+                    container.innerHTML = '<div class="empty-state">No active goals set</div>';
+                    return;
+                }
+
+                container.innerHTML = activeGoals.map(goal => {
+                    const progress = goal.target_value > 0 ? Math.min(100, (goal.current_value / goal.target_value) * 100) : 0;
+                    return `
+                        <div class="goal-item">
+                            <div class="goal-header">
+                                <div class="goal-title">${goal.goal_type.replace('_', ' ')}</div>
+                                <div class="goal-percentage">${Math.round(progress)}%</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${progress}%"></div>
+                            </div>
+                            <div class="goal-details">
+                                <span>Current: ${goal.current_value}</span>
+                                <span>Target: ${goal.target_value}</span>
+                            </div>
+                            ${goal.target_date ? `<p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">Target: ${goal.target_date}</p>` : ''}
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            renderRecentExercises() {
+                const container = document.getElementById('recent-exercises');
+                const recentExercises = this.data.exercises.slice(0, 10);
+
+                if (recentExercises.length === 0) {
+                    container.innerHTML = '<div class="empty-state">No exercise sessions logged yet</div>';
+                    return;
+                }
+
+                container.innerHTML = recentExercises.map(exercise => `
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <h4>${exercise.exercise_type}</h4>
+                            <p>${exercise.date} • ${exercise.duration_minutes} minutes</p>
+                            ${exercise.notes ? `<p style="margin-top: 0.25rem;">${exercise.notes}</p>` : ''}
+                        </div>
+                        <div class="activity-meta">
+                            ${exercise.calories_burned > 0 ? `<strong style="color: var(--success-color);">${exercise.calories_burned} cal</strong>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            renderRecentMeals() {
+                const container = document.getElementById('recent-meals');
+                const recentMeals = this.data.meals.slice(0, 10);
+
+                if (recentMeals.length === 0) {
+                    container.innerHTML = '<div class="empty-state">No meals logged yet</div>';
+                    return;
+                }
+
+                container.innerHTML = recentMeals.map(meal => `
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <h4>${meal.food_item}</h4>
+                            <p>${meal.date} • ${meal.meal_type}</p>
+                            <p>Protein: ${meal.protein_g}g • Carbs: ${meal.carbs_g}g • Fat: ${meal.fat_g}g</p>
+                        </div>
+                        <div class="activity-meta">
+                            ${meal.calories > 0 ? `<strong style="color: var(--warning-color);">${meal.calories} cal</strong>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            renderGoals() {
+                const container = document.getElementById('goals-list');
+                const activeGoals = this.data.goals.filter(g => g.is_active);
+
+                if (activeGoals.length === 0) {
+                    container.innerHTML = '<div class="empty-state">No active goals set. Create your first goal above!</div>';
+                    return;
+                }
+
+                container.innerHTML = activeGoals.map(goal => {
+                    const progress = goal.target_value > 0 ? Math.min(100, (goal.current_value / goal.target_value) * 100) : 0;
+                    return `
+                        <div class="goal-item">
+                            <div class="goal-header">
+                                <div class="goal-title">${goal.goal_type.replace('_', ' ')}</div>
+                                <div class="goal-percentage">${Math.round(progress)}%</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${progress}%"></div>
+                            </div>
+                            <div class="goal-details">
+                                <span>Current: ${goal.current_value}</span>
+                                <span>Target: ${goal.target_value}</span>
+                            </div>
+                            ${goal.target_date ? `<p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">Target: ${goal.target_date}</p>` : ''}
+                            <button onclick="healthTracker.updateGoalProgress(${goal.id})" class="btn btn-primary" style="margin-top: 0.5rem; font-size: 0.75rem; padding: 0.25rem 0.5rem;">
+                                Update Progress
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            updateGoalProgress(goalId) {
+                const goal = this.data.goals.find(g => g.id === goalId);
+                if (!goal) return;
+
+                const newValue = prompt(`Update current value for ${goal.goal_type.replace('_', ' ')}:`, goal.current_value);
+                if (newValue !== null && !isNaN(newValue)) {
+                    goal.current_value = parseFloat(newValue);
+                    this.saveData();
+                    this.updateDashboard();
+                    this.renderGoals();
+                }
+            }
+
+            renderStars(rating) {
+                let stars = '';
+                for (let i = 1; i <= 5; i++) {
+                    stars += `<i class="fas fa-star star ${i <= rating ? '' : 'empty'}"></i>`;
+                }
+                return `<div class="star-rating">${stars}</div>`;
+            }
+
+            renderRecentData() {
+                this.renderRecentExercises();
+                this.renderRecentMeals();
+                this.renderGoals();
+            }
+        }
+
+        const healthTracker = new HealthTracker();
+    </script>
+</body>
+</html>
